@@ -16,3 +16,7 @@
 - [第七章](/Chapter7.md)
 - [第八章](/Chapter8.md)
 - [第九章](/Chapter9.md)
+
+刷完留念：
+
+![](/合影留念.png)
