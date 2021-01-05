@@ -152,8 +152,56 @@ int main() {
 ```
 
 5.代码如下：
-```c
+```cpp
+#include<iostream>
 
+using namespace std;
+
+long long gcd(long long a, long long b)//求最大公约数
+{
+    if (a == 0) return 0;
+    else return (b==0)? a: gcd(b, a % b);
+}
+
+int main()
+{
+    long long n,a,b,nume,deno,divisor,lcm;
+    while (scanf("%lld", &n) != EOF) {
+        if (n == 0) {
+            printf("0\n");
+            continue;
+        }
+        scanf("%lld/%lld",&nume,&deno);
+        divisor = gcd(nume, deno);
+        if(divisor){
+            nume /= divisor;deno /= divisor;
+        }
+        for (int i = 1; i < n; i++)
+        {
+            scanf("%lld/%lld",&a,&b);
+            lcm = deno / gcd(deno, b) * b ;
+            nume = lcm/deno*nume + lcm/b*a;
+            deno = lcm;
+            divisor = gcd(abs(nume), abs(deno));//divisor为最大公因数
+            if(divisor){
+                nume /= divisor;//分子约分
+                deno /= divisor;//分母约分
+            }
+        }
+        if ((deno < 0 && nume > 0) || (deno < 0 && nume < 0)) {
+            deno = -deno;
+            nume = -nume;
+        }
+        if (nume&&nume/deno == 0) {
+            printf("%lld/%lld\n", nume, deno);
+        } else if (nume%deno == 0) {
+            printf("%lld\n", nume/deno);
+        } else {
+            printf("%lld %lld/%lld\n",nume/deno, nume%deno,deno);
+        }
+    }
+    return 0;
+}
 ```
 
 6.代码如下：

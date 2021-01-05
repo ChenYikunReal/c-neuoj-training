@@ -201,7 +201,95 @@ int main()
 
 6.代码如下：
 ```cpp
+#include <iostream>
+#include <cstdio>
+#include <stack>
 
+using namespace std;
+
+typedef long long LL;
+
+char s[1000010];
+
+bool is_digit(int x)
+{
+    if(x >= '0' && x <= '9')return true;
+    else return false;
+}
+
+int main()
+{
+    while(scanf("%s", s)!=EOF)
+    {
+        stack<LL>S;
+        LL temp, temp1;
+        for(int i = 0; s[i];)
+        {
+            if(is_digit(s[i]))
+            {
+                temp = 0;
+                while(is_digit(s[i]))
+                {
+                    temp = temp * 10 + s[i] - '0';
+                    i++;
+                }
+                S.push(temp);
+            }
+            else
+            {
+                switch(s[i])
+                {
+                    case '+':
+                        i++;
+                        break;
+                    case '-':
+                        i++;
+                        temp = 0;
+                        while(is_digit(s[i]))
+                        {
+                            temp = temp * 10 + s[i] - '0';
+                            i++;
+                        }
+                        temp = -temp;
+                        S.push(temp);
+                        break;
+                    case '*':
+                        i++;
+                        temp = 0;
+                        while(is_digit(s[i]))
+                        {
+                            temp = temp * 10 + s[i] - '0';
+                            i++;
+                        }
+                        temp1 = S.top();
+                        S.pop();
+                        S.push(temp1 * temp);
+                        break;
+                    case '/':
+                        i++;
+                        temp = 0;
+                        while(is_digit(s[i]))
+                        {
+                            temp = temp * 10 + s[i] - '0';
+                            i++;
+                        }
+                        temp1 = S.top();
+                        S.pop();
+                        S.push(temp1 / temp);
+                        break;
+                }
+            }
+        }
+        temp = 0;
+        while(!S.empty())
+        {
+            temp += S.top();
+            S.pop();
+        }
+        printf("%lld\n",temp);
+    }
+    return 0;
+}
 ```
 
 7.代码如下：
