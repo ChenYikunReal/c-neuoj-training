@@ -15,14 +15,51 @@ int main() {
 
 2.代码如下：
 ```c
+#include <stdio.h>
 
+int main() {
+    int n, max, sum, remain, ret, i;
+    char ch;
+    while (scanf("%d %c", &n, &ch) != EOF) {
+        i = 0, sum = 1, max = 1, remain = 1, ret = 0;
+        while (sum < n) {
+            max += 2;
+            sum += max * 2;
+        }
+        if (sum != n) {
+            sum -= max * 2;
+            max -= 2;
+            ret = n - sum;
+        }
+        for (i = 0; i <= max / 2; i++) {
+            for (int j = 0; j < i; j++) {
+                putchar(' ');
+            }
+            for (int j = 0; j < max - 2 * i; j++) {
+                putchar(ch);
+            }
+            putchar('\n');
+        }
+        for (i; i < max; i++) {
+            for (int j = 0; j < max - i - 1; j++) {
+                putchar(' ');
+            }
+            for (int j = 0; j < (i - max / 2) * 2 + 1; j++) {
+                putchar(ch);
+            }
+            putchar('\n');
+        }
+        printf("%d\n", ret);
+    }
+    return 0;
+}
 ```
 
 3.代码如下：
 ```c
 #include <stdio.h>
 
-int main(int argc, char const *argv[])
+int main()
 {
     int n, len;
     while (scanf("%d", &n) != EOF)
@@ -76,12 +113,116 @@ int main(int argc, char const *argv[])
 
 6.代码如下：
 ```c
+#include <stdio.h>
 
+/*
+ * simplify the problem as:
+ * the number of 1 that turn n into binary 
+ *      need to be less or equal than k
+ *  the usage of x & (-x)
+ */
+
+/*
+ * get the number of 1 when n is binary.
+ */
+int func(int);
+
+int main(void) {
+    int t, n, k, ret;
+    while (scanf("%d", &t) != EOF) {
+        for (int i = 0; i < t; i++) {
+            ret = 0;
+            scanf("%d %d", &n, &k);
+            while (func(n) > k) {
+                ret += n & (-n);
+                n += n & (-n);
+            }
+            printf("%d\n", ret);
+        }
+    }
+    return 0;
+}
+
+int func(int n) {
+    int cnt = 0;
+    for (; n; n -= n & (-n)) cnt++;
+    return cnt;
+}
 ```
 
 7.代码如下：
-```c
+```cpp
+#include <iostream>
+#include <cstdio>
+#include <cstring>
 
+using namespace std;
+
+typedef long long ll;
+
+int num[20], buf[20], n, t;
+int dp[20][20][10][2][2][2];
+
+ll l, r;
+
+int dfs(int now, int len, int last, bool up, bool down, bool isP, bool lz, bool flag) {
+    if (now == 0) return up && down && isP;
+    if (!flag && dp[now][len][last][up][down][isP] != -1) {
+        return dp[now][len][last][up][down][isP];
+    }
+    int res = 0;
+    int u = flag ? num[now] : 9;
+    for (int i = 0; i <= u; i++) {
+        buf[now] = i;
+        if (lz) {
+            res += dfs(now - 1, len - (i == 0), i, up, down, 
+                isP, i == 0, flag && i == u);
+        }
+        else if (i == last) {
+            if (isP && now <= len / 2) {
+                res += dfs(now - 1, len, i, up, down, i == buf[len + 1 - now], false, flag && i == u);
+            } else {
+                res += dfs(now - 1, len, i, up, down, isP, false, flag && i == u);
+            }
+        } else if (i < last) {
+            if (up) continue;
+            if (isP && now <= len / 2) {
+                res += dfs(now - 1, len, i, false, true, i == buf[len + 1 - now], false, flag && i == u);
+            } else {
+                res += dfs(now - 1, len, i, false, true, isP, false, flag && i == u);
+            }
+        } else {
+            if (!down) continue;
+            if (isP && now <= len / 2) {
+                res += dfs(now - 1, len, i, true, true, i == buf[len + 1 - now], false, flag && i == u);
+            } else {
+                res += dfs(now - 1, len, i, true, true, isP, false, flag && i == u);
+            }
+        }
+    }
+    return flag ? res : dp[now][len][last][up][down][isP] = res;
+}
+
+int query(ll x) {
+    memset(dp, -1, sizeof(dp));
+    n = 0;
+    while (x) {
+        num[++n] = x % 10;
+        x /= 10;
+    }
+    return dfs(n, n, 0, false, false, true, true, true);
+}
+
+int main() {
+    int t;
+    while (scanf("%d", &t) != EOF) {
+        while (t--) {
+            scanf("%lld %lld", &l, &r);
+            printf("%d\n", query(r) - query(l - 1));
+        }
+    }
+    return 0;
+}
 ```
 
 8.代码如下：
@@ -146,7 +287,6 @@ int main(int argc, char const *argv[])
             putchar('\n');
         }
     }
-
     return 0;
 }
 ```
